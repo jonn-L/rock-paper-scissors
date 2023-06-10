@@ -6,7 +6,7 @@ function getComputerChoice() {
     return choices[index];
 }
 
-function playRound(playerSelection, computerSelection) {
+function getRoundResult(playerSelection, computerSelection) {
     playerIND = choices.indexOf(playerSelection)
     computerIND = choices.indexOf(computerSelection)
 
@@ -21,19 +21,55 @@ function playRound(playerSelection, computerSelection) {
     }
 }
 
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-}
+const buttons = document.querySelectorAll('.buttons button');
+const result = document.querySelector('.result');
+const win_counter = document.querySelector('.win_counter');
 
-function game() {
-    for (i = 0; i < 5; i++) {
-        let playerSelection = prompt("Please enter your choice:");
-        playerSelection = capitalizeFirstLetter(playerSelection);
+const resultDisplay = document.createElement('div');
+resultDisplay.classList.add('result_display');
+result.appendChild(resultDisplay);
 
-        let computerSelection = getComputerChoice();
+let playerWins = 0;
+let computerWins = 0;
 
-        console.log(playRound(playerSelection, computerSelection));
+win_counter.firstChild.textContent = `Player Wins: ${playerWins}`;
+win_counter.lastChild.textContent = `Computer Wins: ${computerWins}`;
+
+
+function playRound(e) {
+    let playerSelection = (e.target.classList.value);
+    let result = getRoundResult(playerSelection, getComputerChoice());
+
+    resultDisplay.textContent = result
+    resultDisplay.setAttribute('style', 'border: 3px solid black; padding: 20px');
+
+    if (result.includes('You win!')) {
+        playerWins++;
+        win_counter.firstChild.textContent = `Player Wins: ${playerWins}`;
+    }
+    else if (result.includes('You lose!')) {
+        computerWins++;
+        win_counter.lastChild.textContent = `Computer Wins: ${computerWins}`;
+    }
+
+    if (playerWins === 5) {
+        playerWins = 0;
+        computerWins = 0;
+
+        alert("You Won the Game!");
+
+        win_counter.firstChild.textContent = `Player Wins: ${playerWins}`;
+        win_counter.lastChild.textContent = `Computer Wins: ${computerWins}`;
+    }
+    else if (computerWins === 5) {
+        playerWins = 0;
+        computerWins = 0;
+
+        alert("You Lost the Game! Better luck next time!");
+
+        win_counter.firstChild.textContent = `Player Wins: ${playerWins}`;
+        win_counter.lastChild.textContent = `Computer Wins: ${computerWins}`;
     }
 }
 
-game();
+buttons.forEach(button => button.addEventListener('click', playRound));
